@@ -3,6 +3,8 @@ let substractBtn = document.querySelector(".substract");
 let multiplyBtn = document.querySelector(".multiply");
 let divideBtn = document.querySelector(".divide");
 
+let dotBtn = document.querySelector(".dot");
+
 let zeroBtn = document.querySelector(".zero");
 let oneBtn = document.querySelector(".one");
 let twoBtn = document.querySelector(".two");
@@ -78,3 +80,8 @@ multiplyBtn.addEventListener("click", () => {
 divideBtn.addEventListener("click", () => {
   console.log("/");
 });
+
+// Dot Button
+dotBtn.addEventListener("click", () => {
+    console.log(".");
+})
