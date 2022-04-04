@@ -18,70 +18,88 @@ let nineBtn = document.querySelector(".nine");
 
 let equalsBtn = document.querySelector(".equals");
 
+let resetBtn = document.querySelector(".reset");
+
+let input = "0";
+
+const updateInput = command => {
+  if(command === "reset") {
+    input = "0";
+    return 0;
+  }
+  input += command;
+  console.log(input);
+}
+
 // Number Buttons
 zeroBtn.addEventListener("click", () => {
-  console.log("0");
+  updateInput("0");
 });
 
 oneBtn.addEventListener("click", () => {
-  console.log("1");
+  updateInput("1");
 });
 
 twoBtn.addEventListener("click", () => {
-  console.log("2");
+  updateInput("2");
 });
 
 threeBtn.addEventListener("click", () => {
-  console.log("3");
+  updateInput("3");
 });
 
 fourBtn.addEventListener("click", () => {
-  console.log("4");
+  updateInput("4");
 });
 
 fiveBtn.addEventListener("click", () => {
-  console.log("5");
+  updateInput("5");
 });
 
 sixBtn.addEventListener("click", () => {
-  console.log("6");
+  updateInput("6");
 });
 
 sevenBtn.addEventListener("click", () => {
-  console.log("7");
+  updateInput("7");
 });
 
 eightBtn.addEventListener("click", () => {
-  console.log("8");
+  updateInput("8");
 });
 
 nineBtn.addEventListener("click", () => {
-  console.log("9");
+  updateInput("9");
 });
 
 // Equals Button
 equalsBtn.addEventListener("click", () => {
-  console.log("=");
+  updateInput("=");
 });
 
 // Operator Buttons
 addBtn.addEventListener("click", () => {
-  console.log("+");
+  updateInput("+");
 });
 
 substractBtn.addEventListener("click", () => {
-  console.log("-");
+  updateInput("-");
 });
 
 multiplyBtn.addEventListener("click", () => {
-  console.log("*");
+  updateInput("*");
 });
 
 divideBtn.addEventListener("click", () => {
-  console.log("/");
+  updateInput("/");
 });
 
 // Dot Button
 dotBtn.addEventListener("click", () => {
-    console.log(".");
-})
+  updateInput(".");
+});
+
+// Reset Button
+resetBtn.addEventListener("click", () => {
+  updateInput("reset");
+});
