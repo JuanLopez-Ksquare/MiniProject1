@@ -1,10 +1,13 @@
+// Operators
 let addBtn = document.querySelector(".add");
 let substractBtn = document.querySelector(".substract");
 let multiplyBtn = document.querySelector(".multiply");
 let divideBtn = document.querySelector(".divide");
 
+// Dot
 let dotBtn = document.querySelector(".dot");
 
+// Buttons
 let zeroBtn = document.querySelector(".zero");
 let oneBtn = document.querySelector(".one");
 let twoBtn = document.querySelector(".two");
@@ -16,26 +19,31 @@ let sevenBtn = document.querySelector(".seven");
 let eightBtn = document.querySelector(".eight");
 let nineBtn = document.querySelector(".nine");
 
+// Equals
 let equalsBtn = document.querySelector(".equals");
 
+// Reset
 let resetBtn = document.querySelector(".reset");
 
+// Display
 let displayResult = document.querySelector(".result");
 
 let input = "0";
 
-const updateInput = command => {
-  if(input ==="0") {
+const updateInput = (command) => {
+  if (command === "reset") {
+    input = "0";
+    displayResult.innerHTML = input;
+    return input;
+  }
+  if (input === "0") {
     input = command;
     displayResult.innerHTML = input;
-  }
-  else
-  {
+  } else {
     input += command;
     displayResult.innerHTML = input;
   }
-
-}
+};
 
 // Number Buttons
 zeroBtn.addEventListener("click", () => {
@@ -108,4 +116,19 @@ dotBtn.addEventListener("click", () => {
 // Reset Button
 resetBtn.addEventListener("click", () => {
   updateInput("reset");
+});
+
+// Keyboard event
+window.addEventListener("keydown", (event) => {
+  const reg = new RegExp("^[0-9]+$");
+  if (
+    event.key.match(reg) ||
+    event.key === "+" ||
+    event.key === "-" ||
+    event.key === "*" ||
+    event.key === "/" ||
+    event.key === "."
+  ) {
+    updateInput(event.key);
+  }
 });
