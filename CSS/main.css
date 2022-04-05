@@ -17,6 +17,21 @@ body {
     cursor: default;
 }
 
+.calculator-display{
+    border-radius: 20px 20px 0 0;
+    text-align: end;
+    background-color: rgba(0, 0, 0, 0.747);
+    padding: 1px 10px;
+    font-size: 20px;
+    font-weight: 500;
+    font-style: oblique;
+}
+
+.result {
+    padding: 30px 0;
+    color: #00ff4c;
+}
+
 .calculator-body {
     background-color: rgb(43, 43, 43);
     display: grid;

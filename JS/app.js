@@ -20,15 +20,21 @@ let equalsBtn = document.querySelector(".equals");
 
 let resetBtn = document.querySelector(".reset");
 
+let displayResult = document.querySelector(".result");
+
 let input = "0";
 
 const updateInput = command => {
-  if(command === "reset") {
-    input = "0";
-    return 0;
+  if(input ==="0") {
+    input = command;
+    displayResult.innerHTML = input;
   }
-  input += command;
-  console.log(input);
+  else
+  {
+    input += command;
+    displayResult.innerHTML = input;
+  }
+
 }
 
 // Number Buttons
