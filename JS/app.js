@@ -30,17 +30,52 @@ let displayResult = document.querySelector(".result");
 
 let input = "0";
 
+let firstNumber = 0;
+let secondNumber = 0;
+let result = 0;
+let operator = "";
+let firstTime = true;
+
 const updateInput = (command) => {
   if (command === "reset") {
     input = "0";
+    firstNumber = 0;
+    secondNumber = 0;
     displayResult.innerHTML = input;
     return input;
   }
-  if (input === "0") {
+  if (input === "0" && firstTime) {
     input = command;
+    if (command === "-") {
+      operator = "-";
+    }
+    firstTime = false;
     displayResult.innerHTML = input;
   } else {
-    input += command;
+    switch (command) {
+      case "+":
+        calculation(command);
+        break;
+
+      case "-":
+        calculation(command);
+        break;
+
+      case "*":
+        calculation(command);
+        break;
+
+      case "/":
+        calculation(command);
+        break;
+      case "=":
+        whenEquals();
+        break;
+    }
+
+    if (command != "=") {
+      input += command;
+    }
     displayResult.innerHTML = input;
   }
 };
@@ -127,8 +162,96 @@ window.addEventListener("keydown", (event) => {
     event.key === "-" ||
     event.key === "*" ||
     event.key === "/" ||
-    event.key === "."
+    event.key === "." ||
+    event.key === "Enter"
   ) {
-    updateInput(event.key);
+    if (event.key === "Enter") {
+      updateInput("=");
+    } else {
+      updateInput(event.key);
+    }
   }
 });
+
+function decideOperator(num1, num2) {
+  switch (operator) {
+    case "+":
+      return num1 + num2;
+
+    case "-":
+      return num1 - num2;
+
+    case "*":
+      return num1 * num2;
+
+    case "/":
+      return num1 / num2;
+
+    default:
+      return "No debí llegar aca";
+  }
+}
+
+function calculation(command) {
+  if (
+    input.includes("+") ||
+    input.includes("-") ||
+    input.includes("*") ||
+    input.includes("/")
+  ) {
+    if (input.split(operator).length > 2) {
+      firstNumber = input.split(operator)[1] * -1;
+      secondNumber = input.split(operator)[2];
+
+      result = decideOperator(
+        parseFloat(firstNumber),
+        parseFloat(secondNumber)
+      );
+
+      console.log(input);
+
+      input = result;
+      operator = command;
+    } else {
+      //-5+2
+      if (input.split(operator)[0] !== "") {
+        firstNumber = input.split(operator)[0];
+        secondNumber = input.split(operator)[1];
+
+        result = decideOperator(
+          parseFloat(firstNumber),
+          parseFloat(secondNumber)
+        );
+
+        console.log(input);
+
+        input = result;
+        operator = command;
+      }
+      operator = command;
+    }
+  } else {
+    operator = command;
+    console.log(operator);
+  }
+}
+
+function whenEquals() {
+  if (input.split(operator).length > 2) {
+    firstNumber = input.split(operator)[1] * -1;
+    secondNumber = input.split(operator)[2];
+  } else {
+    firstNumber = input.split(operator)[0];
+    secondNumber = input.split(operator)[1];
+  }
+
+  result = decideOperator(parseFloat(firstNumber), parseFloat(secondNumber));
+
+  console.log(result);
+
+  input = result;
+  input = input.toString();
+  if (input.includes("-")) {
+    operator = "-";
+  }
+}
