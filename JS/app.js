@@ -35,6 +35,8 @@ let secondNumber = 0;
 let result = 0;
 let operator = "";
 let firstTime = true;
+let equalsPressed = false;
+const reg = new RegExp("^[0-9]+$");
 
 const updateInput = (command) => {
   if (command === "reset") {
@@ -51,29 +53,46 @@ const updateInput = (command) => {
     }
     firstTime = false;
     displayResult.innerHTML = input;
+  } else if (input === "0") {
+    input = command;
+    if (command === "-") {
+      operator = "-";
+    }
+    displayResult.innerHTML = input;
+    equalsPressed = false;
   } else {
+    if(equalsPressed && command.match(reg)){
+      result = 0;
+      input = "";
+      displayResult.innerHTML = input;
+      equalsPressed = false;
+    }
     switch (command) {
       case "+":
         calculation(command);
+        equalsPressed = false;
         break;
 
       case "-":
         calculation(command);
+        equalsPressed = false;
         break;
 
       case "*":
         calculation(command);
+        equalsPressed = false;
         break;
 
       case "/":
         calculation(command);
+        equalsPressed = false;
         break;
       case "=":
         whenEquals();
         break;
     }
 
-    if (command != "=") {
+    if (command !== "=") {
       input += command;
     }
     displayResult.innerHTML = input;
@@ -82,7 +101,9 @@ const updateInput = (command) => {
 
 // Number Buttons
 zeroBtn.addEventListener("click", () => {
-  updateInput("0");
+  if (input.slice(-1) !== "+" && input.slice(-1) !== "-" && input.slice(-1) !== "*" && input.slice(-1) !== "/") {
+    updateInput("0");
+  }
 });
 
 oneBtn.addEventListener("click", () => {
@@ -155,7 +176,6 @@ resetBtn.addEventListener("click", () => {
 
 // Keyboard event
 window.addEventListener("keydown", (event) => {
-  const reg = new RegExp("^[0-9]+$");
   if (
     event.key.match(reg) ||
     event.key === "+" ||
@@ -168,7 +188,14 @@ window.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       updateInput("=");
     } else {
-      updateInput(event.key);
+      if (event.key === "0"){
+        if (input.slice(-1) !== "+" && input.slice(-1) !== "-" && input.slice(-1) !== "*" && input.slice(-1) !== "/") {
+          updateInput("0"); 
+        }
+      } else {
+        updateInput(event.key);
+        console.log(event.key);
+      }
     }
   }
 });
@@ -237,6 +264,7 @@ function calculation(command) {
 }
 
 function whenEquals() {
+  equalsPressed = true;
   if (input.split(operator).length > 2) {
     firstNumber = input.split(operator)[1] * -1;
     secondNumber = input.split(operator)[2];
