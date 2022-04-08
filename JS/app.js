@@ -168,23 +168,23 @@ equalsBtn.addEventListener("click", () => {
 
 // Operator Buttons
 addBtn.addEventListener("click", () => {
-  updateInput("+");
   dot = false;
+  updateInput("+");
 });
 
 substractBtn.addEventListener("click", () => {
-  updateInput("-");
   dot = false;
+  updateInput("-");
 });
 
 multiplyBtn.addEventListener("click", () => {
-  updateInput("*");
   dot = false;
+  updateInput("*");
 });
 
 divideBtn.addEventListener("click", () => {
-  updateInput("/");
   dot = false;
+  updateInput("/");
 });
 
 // Dot Button
@@ -214,6 +214,12 @@ window.addEventListener("keydown", (event) => {
   ) {
     if (event.key === "Enter") {
       updateInput("=");
+    } else if (event.key === ".") {
+      if (dot) {
+      } else {
+        updateInput(".");
+        dot = true;
+      }
     } else {
       if (event.key === "0") {
         if (
@@ -224,6 +230,14 @@ window.addEventListener("keydown", (event) => {
         ) {
           updateInput("0");
         }
+      } else if (
+        event.key === "+" ||
+        event.key === "-" ||
+        event.key === "*" ||
+        event.key === "/"
+      ) {
+        dot = false;
+        updateInput(event.key);
       } else {
         updateInput(event.key);
         console.log(event.key);
