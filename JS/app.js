@@ -36,6 +36,7 @@ let result = 0;
 let operator = "";
 let firstTime = true;
 let equalsPressed = false;
+let dot = false;
 const reg = new RegExp("^[0-9]+$");
 
 const updateInput = (command) => {
@@ -43,6 +44,7 @@ const updateInput = (command) => {
     input = "0";
     firstNumber = 0;
     secondNumber = 0;
+    dot = false;
     displayResult.innerHTML = input;
     return input;
   }
@@ -61,11 +63,18 @@ const updateInput = (command) => {
     displayResult.innerHTML = input;
     equalsPressed = false;
   } else {
-    if(equalsPressed && command.match(reg)){
+    if (equalsPressed && command.match(reg)) {
       result = 0;
       input = "";
       displayResult.innerHTML = input;
       equalsPressed = false;
+      dot = false;
+    } else if (equalsPressed && command == ".") {
+      result = 0;
+      input = "";
+      displayResult.innerHTML = input;
+      equalsPressed = false;
+      dot = true;
     }
     switch (command) {
       case "+":
@@ -101,7 +110,12 @@ const updateInput = (command) => {
 
 // Number Buttons
 zeroBtn.addEventListener("click", () => {
-  if (input.slice(-1) !== "+" && input.slice(-1) !== "-" && input.slice(-1) !== "*" && input.slice(-1) !== "/") {
+  if (
+    input.slice(-1) !== "+" &&
+    input.slice(-1) !== "-" &&
+    input.slice(-1) !== "*" &&
+    input.slice(-1) !== "/"
+  ) {
     updateInput("0");
   }
 });
@@ -144,29 +158,42 @@ nineBtn.addEventListener("click", () => {
 
 // Equals Button
 equalsBtn.addEventListener("click", () => {
+  if (input.includes(".")) {
+    dot = true;
+  } else {
+    dot = false;
+  }
   updateInput("=");
 });
 
 // Operator Buttons
 addBtn.addEventListener("click", () => {
   updateInput("+");
+  dot = false;
 });
 
 substractBtn.addEventListener("click", () => {
   updateInput("-");
+  dot = false;
 });
 
 multiplyBtn.addEventListener("click", () => {
   updateInput("*");
+  dot = false;
 });
 
 divideBtn.addEventListener("click", () => {
   updateInput("/");
+  dot = false;
 });
 
 // Dot Button
 dotBtn.addEventListener("click", () => {
-  updateInput(".");
+  if (dot) {
+  } else {
+    updateInput(".");
+    dot = true;
+  }
 });
 
 // Reset Button
@@ -188,9 +215,14 @@ window.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       updateInput("=");
     } else {
-      if (event.key === "0"){
-        if (input.slice(-1) !== "+" && input.slice(-1) !== "-" && input.slice(-1) !== "*" && input.slice(-1) !== "/") {
-          updateInput("0"); 
+      if (event.key === "0") {
+        if (
+          input.slice(-1) !== "+" &&
+          input.slice(-1) !== "-" &&
+          input.slice(-1) !== "*" &&
+          input.slice(-1) !== "/"
+        ) {
+          updateInput("0");
         }
       } else {
         updateInput(event.key);
@@ -282,4 +314,5 @@ function whenEquals() {
   if (input.includes("-")) {
     operator = "-";
   }
+  dot = false;
 }
