@@ -37,7 +37,9 @@ let operator = "";
 let firstTime = true;
 let equalsPressed = false;
 let dot = false;
+let minusFlag = false;
 const reg = new RegExp("^[0-9]+$");
+const reg2 = new RegExp("^[1-9]+$");
 
 const updateInput = (command) => {
   if (command === "reset") {
@@ -49,16 +51,54 @@ const updateInput = (command) => {
     return input;
   }
   if (input === "0" && firstTime) {
-    input = command;
-    if (command === "-") {
-      operator = "-";
+    switch (command) {
+      case "-":
+        input = command;
+        operator = command;
+        break;
+      case "+":
+        input += command;
+        operator = command;
+        break;
+      case "*":
+        input += command;
+        operator = command;
+        break;
+      case "/":
+        input += command;
+        operator = command;
+        break;
+      case "=":
+        break;
+      default:
+        input = command;
+        break;
     }
     firstTime = false;
     displayResult.innerHTML = input;
   } else if (input === "0") {
-    input = command;
-    if (command === "-") {
-      operator = "-";
+    switch (command) {
+      case "-":
+        input = command;
+        operator = "-";
+        break;
+      case "+":
+        input += command;
+        operator = command;
+        break;
+      case "*":
+        input += command;
+        operator = command;
+        break;
+      case "/":
+        input += command;
+        operator = command;
+        break;
+      case "=":
+        break;
+      default:
+        input = command;
+        break;
     }
     displayResult.innerHTML = input;
     equalsPressed = false;
@@ -78,23 +118,85 @@ const updateInput = (command) => {
     }
     switch (command) {
       case "+":
-        calculation(command);
-        equalsPressed = false;
+        if (
+          input.slice(-1) === "+" ||
+          input.slice(-1) === "-" ||
+          input.slice(-1) === "*" ||
+          input.slice(-1) === "/"
+        ) {
+          let arr = [...input];
+          arr.pop();
+          arr.push(command);
+          input = arr.join("");
+          operator = command;
+          minusFlag = true;
+        } else {
+          minusFlag = true;
+          calculation(command);
+          equalsPressed = false;
+        }
         break;
 
       case "-":
-        calculation(command);
-        equalsPressed = false;
+        if (
+          input.slice(-1) === "+" ||
+          input.slice(-1) === "-" ||
+          input.slice(-1) === "*" ||
+          input.slice(-1) === "/"
+        ) {
+          if (minusFlag) {
+            minusFlag = false;
+          } else {
+            let arr = [...input];
+            arr.pop();
+            arr.push(command);
+            input = arr.join("");
+            operator = command;
+          }
+        } else {
+          calculation(command);
+          equalsPressed = false;
+        }
         break;
 
       case "*":
-        calculation(command);
-        equalsPressed = false;
+        if (
+          input.slice(-1) === "+" ||
+          input.slice(-1) === "-" ||
+          input.slice(-1) === "*" ||
+          input.slice(-1) === "/"
+        ) {
+          let arr = [...input];
+          arr.pop();
+          arr.push(command);
+          input = arr.join("");
+          operator = command;
+          minusFlag = true;
+        } else {
+          minusFlag = true;
+          calculation(command);
+          equalsPressed = false;
+        }
         break;
 
       case "/":
-        calculation(command);
-        equalsPressed = false;
+        if (
+          input.slice(-1) === "+" ||
+          input.slice(-1) === "-" ||
+          input.slice(-1) === "*" ||
+          input.slice(-1) === "/"
+        ) {
+          let arr = [...input];
+          arr.pop();
+          arr.push(command);
+          input = arr.join("");
+          operator = command;
+          minusFlag = true;
+        } else {
+          minusFlag = true;
+          calculation(command);
+          equalsPressed = false;
+        }
         break;
       case "=":
         whenEquals();
@@ -102,7 +204,38 @@ const updateInput = (command) => {
     }
 
     if (command !== "=") {
-      input += command;
+      if (
+        input.slice(-1) === "+" ||
+        input.slice(-1) === "*" ||
+        input.slice(-1) === "/"
+      ) {
+        if (command === "+" || command === "*" || command === "/") {
+          let arr = [...input];
+          arr.pop();
+          arr.push(command);
+          input = arr.join("");
+        } else if (command === "-") {
+          input += command;
+        } else {
+          input += command;
+        }
+      } else if (input.slice(-1) === "-" && !minusFlag) {
+        if (
+          command === "+" ||
+          command === "-" ||
+          command === "*" ||
+          command === "/"
+        ) {
+          let arr = [...input];
+          arr.pop();
+          arr.push(command);
+          input = arr.join("");
+        } else {
+          input += command;
+        }
+      } else {
+        input += command;
+      }
     }
     displayResult.innerHTML = input;
   }
@@ -111,12 +244,16 @@ const updateInput = (command) => {
 // Number Buttons
 zeroBtn.addEventListener("click", () => {
   if (
-    input.slice(-1) !== "+" &&
-    input.slice(-1) !== "-" &&
-    input.slice(-1) !== "*" &&
-    input.slice(-1) !== "/"
+    input[input.length - 2] !== "+" &&
+    input[input.length - 2] !== "-" &&
+    input[input.length - 2] !== "*" &&
+    input[input.length - 2] !== "/"
   ) {
     updateInput("0");
+  } else {
+    if (input.slice(-1).match(reg2)) {
+      updateInput("0");
+    }
   }
 });
 
@@ -168,23 +305,47 @@ equalsBtn.addEventListener("click", () => {
 
 // Operator Buttons
 addBtn.addEventListener("click", () => {
-  dot = false;
-  updateInput("+");
+  if (checkOperators() < 2) {
+    dot = false;
+    updateInput("+");
+  }
+  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+    dot = false;
+    updateInput("+");
+  }
 });
 
 substractBtn.addEventListener("click", () => {
-  dot = false;
-  updateInput("-");
+  if (checkOperators() < 2) {
+    dot = false;
+    updateInput("-");
+  }
+  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+    dot = false;
+    updateInput("-");
+  }
 });
 
 multiplyBtn.addEventListener("click", () => {
-  dot = false;
-  updateInput("*");
+  if (checkOperators() < 2) {
+    dot = false;
+    updateInput("*");
+  }
+  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+    dot = false;
+    updateInput("*");
+  }
 });
 
 divideBtn.addEventListener("click", () => {
-  dot = false;
-  updateInput("/");
+  if (checkOperators() < 2) {
+    dot = false;
+    updateInput("/");
+  }
+  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+    dot = false;
+    updateInput("/");
+  }
 });
 
 // Dot Button
@@ -223,12 +384,16 @@ window.addEventListener("keydown", (event) => {
     } else {
       if (event.key === "0") {
         if (
-          input.slice(-1) !== "+" &&
-          input.slice(-1) !== "-" &&
-          input.slice(-1) !== "*" &&
-          input.slice(-1) !== "/"
+          input[input.length - 2] !== "+" &&
+          input[input.length - 2] !== "-" &&
+          input[input.length - 2] !== "*" &&
+          input[input.length - 2] !== "/"
         ) {
           updateInput("0");
+        } else {
+          if (input.slice(-1).match(reg2)) {
+            updateInput("0");
+          }
         }
       } else if (
         event.key === "+" ||
@@ -236,11 +401,16 @@ window.addEventListener("keydown", (event) => {
         event.key === "*" ||
         event.key === "/"
       ) {
-        dot = false;
-        updateInput(event.key);
+        if (checkOperators() < 2) {
+          dot = false;
+          updateInput(event.key);
+        }
+        if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+          dot = false;
+          updateInput(event.key);
+        }
       } else {
         updateInput(event.key);
-        console.log(event.key);
       }
     }
   }
@@ -280,11 +450,11 @@ function calculation(command) {
         parseFloat(firstNumber),
         parseFloat(secondNumber)
       );
-
-      console.log(input);
-
-      input = result;
-      operator = command;
+      if (!Number.isNaN(result)) {
+        input = result;
+        input = input.toString();
+        operator = command;
+      }
     } else {
       //-5+2
       if (input.split(operator)[0] !== "") {
@@ -295,22 +465,21 @@ function calculation(command) {
           parseFloat(firstNumber),
           parseFloat(secondNumber)
         );
-
-        console.log(input);
-
-        input = result;
-        operator = command;
+        if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
+          input = "Error";
+        } else if (!Number.isNaN(result)) {
+          input = result;
+          input = input.toString();
+          operator = command;
+        }
       }
-      operator = command;
     }
   } else {
     operator = command;
-    console.log(operator);
   }
 }
 
 function whenEquals() {
-  equalsPressed = true;
   if (input.split(operator).length > 2) {
     firstNumber = input.split(operator)[1] * -1;
     secondNumber = input.split(operator)[2];
@@ -321,12 +490,30 @@ function whenEquals() {
 
   result = decideOperator(parseFloat(firstNumber), parseFloat(secondNumber));
 
-  console.log(result);
-
-  input = result;
-  input = input.toString();
-  if (input.includes("-")) {
-    operator = "-";
+  if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
+    input = "Error";
+  } else if (!Number.isNaN(result)) {
+    input = result;
+    input = input.toString();
+    if (input.includes("-")) {
+      operator = "-";
+    }
+    dot = false;
+    equalsPressed = true;
   }
-  dot = false;
+}
+
+function checkOperators() {
+  let count = 0;
+  for (let i = 1; i < input.length; i++) {
+    if (
+      input[i] === "+" ||
+      input[i] === "-" ||
+      input[i] === "*" ||
+      input[i] === "/"
+    ) {
+      count++;
+    }
+  }
+  return count;
 }
