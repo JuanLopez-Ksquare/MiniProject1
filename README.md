@@ -1,7 +1,7 @@
 # Calculator-Project
 
-Juan Carlos López Villajuana
-Juan Pablo Tututi Avila
+Juan Carlos López Villajuana  
+Juan Pablo Tututi Avila  
 
 # FirstProject
 | User Stories     | Juan Pablo| Juan Carlos |
