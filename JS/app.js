@@ -251,7 +251,7 @@ zeroBtn.addEventListener("click", () => {
   ) {
     updateInput("0");
   } else {
-    if (input.slice(-1).match(reg2)) {
+    if (input.slice(-1).match(reg2) || input.slice(-1) === ".") {
       updateInput("0");
     }
   }
@@ -403,8 +403,8 @@ window.addEventListener("keydown", (event) => {
         ) {
           updateInput("0");
         } else {
-          if (input.slice(-1).match(reg2)) {
-            updateInput("0");
+          if (input.slice(-1).match(reg2) || input.slice(-1) === ".") {
+            updateInput(event.key);
           }
         }
       } else if (
@@ -469,8 +469,14 @@ function calculation(command) {
         }
       }
       operator = arr[1];
-      firstNumber = input.split(operator)[0];
-      secondNumber = input.split(operator)[1];
+      if (input.split(operator)[0] === "") {
+        firstNumber = input.split(operator)[1] * -1;
+        secondNumber = input.split(operator)[2];
+      } else {
+        firstNumber = input.split(operator)[0];
+        secondNumber = input.split(operator)[1];
+      }
+
       result = decideOperator(
         parseFloat(firstNumber),
         parseFloat(secondNumber)
@@ -482,22 +488,36 @@ function calculation(command) {
       }
     } else {
       //-5+2
-      if (input.split(operator)[0] !== "") {
-        firstNumber = input.split(operator)[0];
-        secondNumber = input.split(operator)[1];
-
-        result = decideOperator(
-          parseFloat(firstNumber),
-          parseFloat(secondNumber)
-        );
-        console.log(input);
-        if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
-          input = "Error";
-        } else if (!Number.isNaN(result)) {
-          input = result;
-          input = input.toString();
-          operator = command;
+      if (input[0] === "-") {
+        let arr = [];
+        for (let i = 0; i < input.length; i++) {
+          if (
+            input[i] === "+" ||
+            input[i] === "-" ||
+            input[i] === "/" ||
+            input[i] === "*"
+          ) {
+            arr.push(input[i]);
+          }
         }
+        console.log(arr);
+        operator = arr[1];
+      }
+      console.log(operator);
+      firstNumber = input.split(operator)[0];
+      secondNumber = input.split(operator)[1];
+
+      result = decideOperator(
+        parseFloat(firstNumber),
+        parseFloat(secondNumber)
+      );
+      console.log(input);
+      if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
+        input = "Error";
+      } else if (!Number.isNaN(result)) {
+        input = result;
+        input = input.toString();
+        operator = command;
       }
     }
   } else {
@@ -518,9 +538,13 @@ function whenEquals() {
         arr.push(input[i]);
       }
     }
-    operator = arr[1];
-    firstNumber = input.split(operator)[0];
-    secondNumber = input.split(operator)[1];
+    if (input.split(operator)[0] === "") {
+      firstNumber = input.split(operator)[1] * -1;
+      secondNumber = input.split(operator)[2];
+    } else {
+      firstNumber = input.split(operator)[0];
+      secondNumber = input.split(operator)[1];
+    }
   } else {
     if (input[0] === "-") {
       let arr = [];
