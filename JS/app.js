@@ -487,7 +487,6 @@ function calculation(command) {
         operator = command;
       }
     } else {
-      //-5+2
       if (input[0] === "-") {
         let arr = [];
         for (let i = 0; i < input.length; i++) {
@@ -570,8 +569,7 @@ function whenEquals() {
   if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
     input = "Error";
   } else if (!Number.isNaN(result)) {
-    input = result;
-    input = input.toString();
+    input = result.toString();
     if (input.includes("-")) {
       operator = "-";
     }
