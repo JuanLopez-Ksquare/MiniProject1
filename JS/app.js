@@ -38,7 +38,6 @@ let firstTime = true;
 let equalsPressed = false;
 let dot = false;
 let minusFlag = false;
-let error = false;
 const reg = new RegExp("^[0-9]+$");
 const reg2 = new RegExp("^[1-9]+$");
 
@@ -468,17 +467,11 @@ function calculation(command) {
         );
         if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
           input = "Error";
-          error = true;
         } else if (!Number.isNaN(result)) {
           input = result;
           input = input.toString();
           operator = command;
         }
-      }
-      if (error) {
-        error = false;
-      } else {
-        operator = command;
       }
     }
   } else {
