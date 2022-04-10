@@ -251,7 +251,7 @@ zeroBtn.addEventListener("click", () => {
   ) {
     updateInput("0");
   } else {
-    if (input.slice(-1).match(reg2)) {
+    if (input.slice(-1).match(reg2) || input.slice(-1) === ".") {
       updateInput("0");
     }
   }
@@ -295,56 +295,66 @@ nineBtn.addEventListener("click", () => {
 
 // Equals Button
 equalsBtn.addEventListener("click", () => {
-  if (input.includes(".")) {
-    dot = true;
-  } else {
-    dot = false;
+  if (input.slice(-1) !== ".") {
+    if (input.includes(".")) {
+      dot = true;
+    } else {
+      dot = false;
+    }
+    updateInput("=");
   }
-  updateInput("=");
 });
 
 // Operator Buttons
 addBtn.addEventListener("click", () => {
-  if (checkOperators() < 2) {
-    dot = false;
-    updateInput("+");
-  }
-  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
-    dot = false;
-    updateInput("+");
+  if (input.slice(-1) !== ".") {
+    if (checkOperators() < 2) {
+      dot = false;
+      updateInput("+");
+    }
+    if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+      dot = false;
+      updateInput("+");
+    }
   }
 });
 
 substractBtn.addEventListener("click", () => {
-  if (checkOperators() < 2) {
-    dot = false;
-    updateInput("-");
-  }
-  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
-    dot = false;
-    updateInput("-");
+  if (input.slice(-1) !== ".") {
+    if (checkOperators() < 2) {
+      dot = false;
+      updateInput("-");
+    }
+    if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+      dot = false;
+      updateInput("-");
+    }
   }
 });
 
 multiplyBtn.addEventListener("click", () => {
-  if (checkOperators() < 2) {
-    dot = false;
-    updateInput("*");
-  }
-  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
-    dot = false;
-    updateInput("*");
+  if (input.slice(-1) !== ".") {
+    if (checkOperators() < 2) {
+      dot = false;
+      updateInput("*");
+    }
+    if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+      dot = false;
+      updateInput("*");
+    }
   }
 });
 
 divideBtn.addEventListener("click", () => {
-  if (checkOperators() < 2) {
-    dot = false;
-    updateInput("/");
-  }
-  if (checkOperators() == 2 && input.slice(-1).match(reg)) {
-    dot = false;
-    updateInput("/");
+  if (input.slice(-1) !== ".") {
+    if (checkOperators() < 2) {
+      dot = false;
+      updateInput("/");
+    }
+    if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+      dot = false;
+      updateInput("/");
+    }
   }
 });
 
@@ -374,7 +384,9 @@ window.addEventListener("keydown", (event) => {
     event.key === "Enter"
   ) {
     if (event.key === "Enter") {
-      updateInput("=");
+      if (input.slice(-1) !== ".") {
+        updateInput("=");
+      }
     } else if (event.key === ".") {
       if (dot) {
       } else {
@@ -391,8 +403,8 @@ window.addEventListener("keydown", (event) => {
         ) {
           updateInput("0");
         } else {
-          if (input.slice(-1).match(reg2)) {
-            updateInput("0");
+          if (input.slice(-1).match(reg2) || input.slice(-1) === ".") {
+            updateInput(event.key);
           }
         }
       } else if (
@@ -401,13 +413,15 @@ window.addEventListener("keydown", (event) => {
         event.key === "*" ||
         event.key === "/"
       ) {
-        if (checkOperators() < 2) {
-          dot = false;
-          updateInput(event.key);
-        }
-        if (checkOperators() == 2 && input.slice(-1).match(reg)) {
-          dot = false;
-          updateInput(event.key);
+        if (input.slice(-1) !== ".") {
+          if (checkOperators() < 2) {
+            dot = false;
+            updateInput(event.key);
+          }
+          if (checkOperators() == 2 && input.slice(-1).match(reg)) {
+            dot = false;
+            updateInput(event.key);
+          }
         }
       } else {
         updateInput(event.key);
@@ -431,7 +445,7 @@ function decideOperator(num1, num2) {
       return num1 / num2;
 
     default:
-      return "No debí llegar aca";
+      return parseFloat(input);
   }
 }
 
@@ -443,8 +457,25 @@ function calculation(command) {
     input.includes("/")
   ) {
     if (input.split(operator).length > 2) {
-      firstNumber = input.split(operator)[1] * -1;
-      secondNumber = input.split(operator)[2];
+      let arr = [];
+      for (let i = 0; i < input.length; i++) {
+        if (
+          input[i] === "+" ||
+          input[i] === "-" ||
+          input[i] === "/" ||
+          input[i] === "*"
+        ) {
+          arr.push(input[i]);
+        }
+      }
+      operator = arr[1];
+      if (input.split(operator)[0] === "") {
+        firstNumber = input.split(operator)[1] * -1;
+        secondNumber = input.split(operator)[2];
+      } else {
+        firstNumber = input.split(operator)[0];
+        secondNumber = input.split(operator)[1];
+      }
 
       result = decideOperator(
         parseFloat(firstNumber),
@@ -457,21 +488,36 @@ function calculation(command) {
       }
     } else {
       //-5+2
-      if (input.split(operator)[0] !== "") {
-        firstNumber = input.split(operator)[0];
-        secondNumber = input.split(operator)[1];
-
-        result = decideOperator(
-          parseFloat(firstNumber),
-          parseFloat(secondNumber)
-        );
-        if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
-          input = "Error";
-        } else if (!Number.isNaN(result)) {
-          input = result;
-          input = input.toString();
-          operator = command;
+      if (input[0] === "-") {
+        let arr = [];
+        for (let i = 0; i < input.length; i++) {
+          if (
+            input[i] === "+" ||
+            input[i] === "-" ||
+            input[i] === "/" ||
+            input[i] === "*"
+          ) {
+            arr.push(input[i]);
+          }
         }
+        console.log(arr);
+        operator = arr[1];
+      }
+      console.log(operator);
+      firstNumber = input.split(operator)[0];
+      secondNumber = input.split(operator)[1];
+
+      result = decideOperator(
+        parseFloat(firstNumber),
+        parseFloat(secondNumber)
+      );
+      console.log(input);
+      if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
+        input = "Error";
+      } else if (!Number.isNaN(result)) {
+        input = result;
+        input = input.toString();
+        operator = command;
       }
     }
   } else {
@@ -481,15 +527,46 @@ function calculation(command) {
 
 function whenEquals() {
   if (input.split(operator).length > 2) {
-    firstNumber = input.split(operator)[1] * -1;
-    secondNumber = input.split(operator)[2];
+    let arr = [];
+    for (let i = 0; i < input.length; i++) {
+      if (
+        input[i] === "+" ||
+        input[i] === "-" ||
+        input[i] === "/" ||
+        input[i] === "*"
+      ) {
+        arr.push(input[i]);
+      }
+    }
+    if (input.split(operator)[0] === "") {
+      firstNumber = input.split(operator)[1] * -1;
+      secondNumber = input.split(operator)[2];
+    } else {
+      firstNumber = input.split(operator)[0];
+      secondNumber = input.split(operator)[1];
+    }
   } else {
+    if (input[0] === "-") {
+      let arr = [];
+      for (let i = 0; i < input.length; i++) {
+        if (
+          input[i] === "+" ||
+          input[i] === "-" ||
+          input[i] === "/" ||
+          input[i] === "*"
+        ) {
+          arr.push(input[i]);
+        }
+      }
+      operator = arr[1];
+    }
     firstNumber = input.split(operator)[0];
     secondNumber = input.split(operator)[1];
+    console.log(input.split(operator));
   }
 
   result = decideOperator(parseFloat(firstNumber), parseFloat(secondNumber));
-
+  console.log(result);
   if (firstNumber === "0" && secondNumber === "0" && operator === "/") {
     input = "Error";
   } else if (!Number.isNaN(result)) {
